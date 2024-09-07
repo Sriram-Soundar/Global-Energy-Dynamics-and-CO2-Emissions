@@ -19,9 +19,9 @@ This research utilizes comprehensive datasets from 1985 to 2008 to analyze globa
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/yourusername/energy-co2-dynamics.git
-   cd energy-co2-dynamics
-   
+   git clone https://github.com/Sriram-Soundar/Global-Energy-Dynamics-and-CO2-Emissions.git
+   cd Global-Energy-Dynamics-and-CO2-Emissions
+      
 2. **Explore the Data**:
 
    Open the provided R Markdown files to review the detailed analysis process, from initial data cleaning to sophisticated       
