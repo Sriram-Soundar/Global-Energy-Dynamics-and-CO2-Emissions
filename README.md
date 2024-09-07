@@ -1,6 +1,6 @@
 # Global Energy Dynamics and CO2 Emissions: A Comprehensive Analysis (1985-2008)
 
-Welcome to the repository for "Global Energy Dynamics and CO2 Emissions: A Comprehensive Analysis (1985-2008)." This project explores the intricate relationships between various types of energy consumption and carbon dioxide emissions across different global regions, providing deep insights into environmental impacts and regional dynamics.
+Welcome to my repository for "Global Energy Dynamics and CO2 Emissions: A Comprehensive Analysis (1985-2008)." This project explores the intricate relationships between various types of energy consumption and carbon dioxide emissions across different global regions, providing deep insights into environmental impacts and regional dynamics.
 
 ## Overview
 
@@ -8,11 +8,11 @@ This research utilizes comprehensive datasets from 1985 to 2008 to analyze globa
 
 ## Features
 
-- **Integrated Datasets**: Merges multiple sources to examine CO2 emissions alongside energy consumption worldwide.
-- **Exploratory Data Analysis (EDA)**: Employs various statistical techniques to uncover underlying patterns and relationships within the data.
-  - **Correlation Analysis**: Utilizes correlation matrices to identify and visualize the relationships between different energy types and CO2 emissions.
-  - **Trend Analysis**: Examines changes over time using line graphs, highlighting regional and temporal trends in emissions.
-  - **Bivariate Analysis**: Investigates the relationships between individual variables and CO2 emissions through scatter plots and simple linear regressions, providing a preliminary understanding that guides further modeling.
+- **Integrated Datasets**: This merges 8 public datasets found on GapMinder.com to examine CO2 emissions alongside energy consumption worldwide.
+- **Exploratory Data Analysis (EDA)**: Employed various statistical techniques to uncover underlying patterns and relationships within the data.
+  - **Correlation Analysis**: Utilized correlation matrices to identify and visualize the relationships between different energy types and CO2 emissions.
+  - **Trend Analysis**: Examined changes over time using line graphs, highlighting regional and temporal trends in emissions.
+  - **Bivariate Analysis**: Investigated the relationships between individual variables and CO2 emissions through scatter plots and simple linear regressions, providing a preliminary understanding that guides further modeling.
 - **Statistical Modeling**: Leverages multiple linear regression to quantify the impact of energy consumption types on CO2 emissions, incorporating interactions to capture regional effects.
 
 ## How to Use
