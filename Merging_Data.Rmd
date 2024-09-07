@@ -1,0 +1,134 @@
+---
+title: "MergingData"
+author: "Sriram Soundarapandian"
+date: "2024-04-11"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+library(tidyverse)
+library(dplyr)
+```
+
+```{r}
+#Converting the "k's"
+multiply_k <- function(x) {
+  x <- as.character(x)
+  if_else(str_detect(x, "k"),
+    as.numeric(str_remove(x, "k")) * 1000,
+    as.numeric(x)
+  )
+}
+# Consumption Datasets
+coal_consumption <- read_csv("coal_consumption_per_cap.csv") %>%
+  select(country, `2000`:`2008`) %>%
+  mutate(across(`2000`:`2008`, as.numeric)) %>%
+  pivot_longer(cols = `2000`:`2008`, names_to = "Year", values_to = "Value") %>%
+  mutate(Dataset = "coal-consumption")
+
+electricity_consumption <- read_csv("electricity_use_per_person.csv") %>%
+  select(country, `2000`:`2008`) %>%
+  mutate(across(`2000`:`2008`, multiply_k)) %>%
+  pivot_longer(cols = `2000`:`2008`, names_to = "Year", values_to = "Value") %>%
+  mutate(Dataset = "electricity-consumption")
+
+oil_consumption <- read_csv("oil_consumption_per_person.csv") %>%
+  select(country, `2000`:`2008`) %>%
+  pivot_longer(cols = `2000`:`2008`, names_to = "Year", values_to = "Value") %>%
+  mutate(Dataset = "oil-consumption")
+
+residential_elec_consumption <- read_csv("resi_elec_use_per_person.csv") %>%
+  select(country, `2000`:`2008`) %>%
+  mutate(across(`2000`:`2008`, as.numeric)) %>%
+  pivot_longer(cols = `2000`:`2008`, names_to = "Year", values_to = "Value") %>%
+  mutate(Dataset = "residential-elec-consumption")
+
+naturalgas_consumption <- read_csv("natural_gas_production_per_person.csv") %>%
+  select(country, `2000`:`2008`) %>%
+  pivot_longer(cols = `2000`:`2008`, names_to = "Year", values_to = "Value") %>%
+  mutate(Dataset = "naturalgas-consumption")
+
+# Production Datasets
+electricity_production <- read_csv("electricity_generation_per_person.csv") %>%
+  select(country, `2000`:`2008`) %>%
+  mutate(across(`2000`:`2008`, multiply_k)) %>%
+  pivot_longer(cols = `2000`:`2008`, names_to = "Year", values_to = "Value") %>%
+  mutate(Dataset = "electricity-production")
+
+hydro_production <- read_csv("hydro_power_generation_per_person.csv") %>%
+  select(country, `2000`:`2008`) %>%
+  pivot_longer(cols = `2000`:`2008`, names_to = "Year", values_to = "Value") %>%
+  mutate(Dataset = "hydro-production")
+
+nuclear_production <- read_csv("nuclear_power_generation_per_person.csv") %>%
+  select(country, `2000`:`2008`) %>%
+  pivot_longer(cols = `2000`:`2008`, names_to = "Year", values_to = "Value") %>%
+  mutate(Dataset = "nuclear-production")
+
+oil_production <- read_csv("oil_production_per_person.csv") %>%
+  select(country, `2000`:`2008`) %>%
+  pivot_longer(cols = `2000`:`2008`, names_to = "Year", values_to = "Value") %>%
+  mutate(Dataset = "oil-production")
+
+# Overall Datasets
+co2_emissions <- read_csv("co2_emissions_tonnes_per_person.csv") %>%
+  select(country, `2000`:`2008`) %>%
+  pivot_longer(cols = `2000`:`2008`, names_to = "Year", values_to = "Value") %>%
+  mutate(Dataset = "co2-emissions")
+
+energy_production <- read_csv("energy_production_per_person.csv") %>%
+  select(country, `2000`:`2008`) %>%
+  pivot_longer(cols = `2000`:`2008`, names_to = "Year", values_to = "Value") %>%
+  mutate(Dataset = "energy-production")
+
+energy_use <- read_csv("energy_use_per_person.csv") %>%
+  select(country, `2000`:`2008`) %>%
+  mutate(across(`2000`:`2008`, multiply_k)) %>%
+  pivot_longer(cols = `2000`:`2008`, names_to = "Year", values_to = "Value") %>%
+  mutate(Dataset = "energy-use")
+```
+
+```{r}
+merged_data <- coal_consumption %>%
+  left_join(electricity_consumption, by = c("country", "Year")) %>%
+  left_join(oil_consumption, by = c("country", "Year")) %>%
+  left_join(residential_elec_consumption, by = c("country", "Year")) %>%
+  left_join(naturalgas_consumption, by = c("country", "Year")) %>%
+  left_join(electricity_production, by = c("country", "Year")) %>%
+  left_join(hydro_production, by = c("country", "Year")) %>%
+  left_join(nuclear_production, by = c("country", "Year")) %>%
+  left_join(oil_production, by = c("country", "Year")) %>%
+  left_join(co2_emissions, by = c("country", "Year")) %>%
+  left_join(energy_production, by = c("country", "Year")) %>%
+  left_join(energy_use, by = c("country", "Year"))
+```
+
+```{r}
+merged_data <- merged_data %>%
+  rename(Coal_Consumption = Value.x,
+         Electricity_Consumption = Value.y,
+         Oil_Consumption = Value.x.x,
+         Residential_Elec_Consumption = Value.y.y,
+         Natural_Gas_Consumption = Value.x.x.x,
+         Electricity_production = Value.y.y.y,
+         Hydro_Production = Value.x.x.x.x,
+         Nuclear_Production = Value.y.y.y.y,
+         Oil_Production = Value.x.x.x.x.x,
+         CO2_emissions = Value.y.y.y.y.y,
+         Energy_Production = Value.x.x.x.x.x.x,
+         Energy_Use = Value.y.y.y.y.y.y
+         )
+```
+```{r}
+merged_data <- merged_data %>%
+  select(-starts_with("Dataset"))
+```
+
+```{r}
+write_csv(merged_data, file = "finaldata.csv")
+```
+
+
+

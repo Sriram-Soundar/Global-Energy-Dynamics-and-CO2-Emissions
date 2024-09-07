@@ -1,0 +1,394 @@
+---
+title: "Global Energy Dynamics and CO2 Emissions: A Comprehensive Analysis (1985-2008)"
+author: "Sriram Soundarapandian"
+date: "2024-04-25"
+output:
+  pdf_document: default
+header-includes: \usepackage{setspace}\doublespacing
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include=FALSE}
+library(readr)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(pheatmap)
+finaldata <- read_csv("finaldata.csv")
+```
+
+## Abstract
+
+This study investigates the impact of various types of energy consumption and regional differences on carbon dioxide (CO2) emissions. Utilizing six datasets from Gapminder, the research explores relationships between CO2 emissions and energy consumption variables across different regions. Key findings reveal that specific energy types and regional variations significantly predict CO2 emissions, with North America identified as a major contributor compared to other regions. These results magnify the importance of tailored energy policies to mitigate CO2 emissions globally.
+
+## Intro
+
+Amidst the growing concerns over climate change, understanding the factors contributing to carbon dioxide (CO2) emissions has become imperative. Various studies have linked energy consumption across different sectors to CO2 emissions (Li), suggesting significant environmental impacts. This study focuses on exploring how different types of energy consumption and regional variations affect CO2 emissions. By examining the relationship between energy consumption variables and CO2 emissions, this research aims to identify significant predictors and understand their implications on a global scale, thus addressing the broader question of how regional energy consumption patterns contribute to environmental degradation.
+
+
+```{r, include=FALSE}
+#manually creating regions
+mena_countries <- c("UAE", "Saudi Arabia", "Iran", "Iraq", "Israel", "Kuwait", "Oman", "Qatar", "Turkey")
+
+sub_saharan_africa <- c("South Africa")
+
+european <- c("Austria", "Belgium", "Bulgaria", "Belarus", "Switzerland", "Cyprus", "Czech Republic", "Germany", "Denmark", "Spain", "Estonia", "Finland", "France", "UK", "Greece", "Croatia", "Hungary", "Iceland", "Ireland", "Italy", "Lithuania", "Luxembourg", "Latvia", "Netherlands", "Norway", "Poland", "Portugal", "Romania", "Russia", "Slovakia", "Slovenia", "Sweden")
+
+north_america <- c("Canada", "USA")
+
+latin_america_and_caribbean <- c("Argentina", "Brazil", "Chile", "Columbia", "Ecuador", "Mexico", "Peru", "Trinidad and Tobago", "Venezuela")
+
+east_asia_and_pacific <- c("Australia", "China", "Hong Kong, China", "Indonesia", "Japan", "Kazakhstan", "Malaysia", "New Zealand", "Philippines", "Singapore", "South Korea", "Taiwan", "Thailand", "Vietnam")
+
+south_asia <- c("Bangladesh", "India", "Pakistan", "Sri Lanka")
+
+central_asia_and_europe <- c("Azerbaijan", "Turkmenistan", "Uzbekistan")
+
+eastern_europe <- c("Ukraine")
+```
+
+```{r, include=FALSE}
+#CORRELATION MATRIX
+
+numeric_data <- finaldata %>% 
+  dplyr::select(CO2_emissions, Coal_Consumption, Electricity_Consumption, Oil_Consumption, Residential_Elec_Consumption, Natural_Gas_Consumption, Energy_Use)
+
+cor_matrix <- cor(numeric_data, use = "complete.obs")
+#refered to websites online to help create this
+pheatmap(cor_matrix, 
+         clustering_distance_rows = "euclidean",
+         clustering_distance_cols = "euclidean",
+         clustering_method = "complete",
+         color = colorRampPalette(c("blue", "white", "red"))(50),
+         border_color = NA)
+```
+
+```{r, include=FALSE}
+#region dataframes
+mena_df <- finaldata %>% filter(country %in% mena_countries)
+sub_saharan_africa_df <- finaldata %>% filter(country %in% sub_saharan_africa)
+european_df <- finaldata %>% filter(country %in% european)
+north_america_df <- finaldata %>% filter(country %in% north_america)
+latin_america_and_caribbean_df <- finaldata %>% filter(country %in% latin_america_and_caribbean)
+east_asia_and_pacific_df <- finaldata %>% filter(country %in% east_asia_and_pacific)
+south_asia_df <- finaldata %>% filter(country %in% south_asia)
+central_asia_and_europe_df <- finaldata %>% filter(country %in% central_asia_and_europe)
+eastern_europe_df <- finaldata %>% filter(country %in% eastern_europe)
+```
+
+```{r, include=FALSE}
+#Exploratory Data Analysis
+
+#Bivariate analysis** using single linear regressions and scatterplots to justify addition of following predictors in the following model
+
+lm_coal <- lm(CO2_emissions ~ Coal_Consumption, data = finaldata)
+summary(lm_coal)
+
+conf_intervals <- confint(lm_coal)
+print(conf_intervals)
+
+ggplot(finaldata, aes(x = Coal_Consumption, y = CO2_emissions)) +
+  geom_point() +
+  geom_smooth(method = "lm", col = "blue") +
+  labs(title = "Relationship between Coal Consumption and CO2 Emissions per Capita",
+       x = "Coal Consumption (Units)",
+       y = "CO2 Emissions (Metric Tons)") +
+  theme_minimal()
+
+```
+
+```{r, include=FALSE}
+lm_electricity <- lm(CO2_emissions ~ Electricity_Consumption, data = finaldata)
+summary(lm_electricity)
+
+conf_intervals <- confint(lm_electricity)
+print(conf_intervals)
+
+ggplot(finaldata, aes(x = Electricity_Consumption, y = CO2_emissions)) +
+  geom_point() +
+  geom_smooth(method = "lm", col = "blue") +
+  labs(title = "Relationship between Electricity Consumption and CO2 Emissions per Capita",
+       x = "Electricity Consumption (Units)",
+       y = "CO2 Emissions (Metric Tons)") +
+  theme_minimal()
+```
+
+```{r, include=FALSE}
+lm_oil <- lm(CO2_emissions ~ Oil_Consumption, data = finaldata)
+summary(lm_oil)
+
+conf_intervals <- confint(lm_oil)
+print(conf_intervals)
+
+ggplot(finaldata, aes(x = Oil_Consumption, y = CO2_emissions)) +
+  geom_point() +
+  geom_smooth(method = "lm", col = "blue") +
+  labs(title = "Relationship between Oil Consumption and CO2 Emissions per Capita",
+       x = "Oil Consumption (Units)",
+       y = "CO2 Emissions (Metric Tons)") +
+  theme_minimal()
+```
+
+```{r, include=FALSE}
+lm_residential_elec <- lm(CO2_emissions ~ Residential_Elec_Consumption, data = finaldata)
+summary(lm_residential_elec)
+
+conf_intervals <- confint(lm_residential_elec)
+print(conf_intervals)
+
+ggplot(finaldata, aes(x = Residential_Elec_Consumption, y = CO2_emissions)) +
+  geom_point() +
+  geom_smooth(method = "lm", col = "blue") +
+  labs(title = "Relationship between Residential Electricity Consumption and CO2 Emissions per Capita",
+       x = "Residential Electricity Consumption (Units)",
+       y = "CO2 Emissions (Metric Tons)") +
+  theme_minimal()
+```
+
+```{r, include=FALSE}
+lm_natural_gas <- lm(CO2_emissions ~ Natural_Gas_Consumption, data = finaldata)
+summary(lm_natural_gas)
+
+conf_intervals <- confint(lm_natural_gas)
+print(conf_intervals)
+
+ggplot(finaldata, aes(x = Natural_Gas_Consumption, y = CO2_emissions)) +
+  geom_point() +
+  geom_smooth(method = "lm", col = "blue") +
+  labs(title = "Relationship between Natural Gas Consumption and CO2 Emissions per Capita",
+       x = "Natural Gas Consumption (Units)",
+       y = "CO2 Emissions (Metric Tons)") +
+  theme_minimal()
+
+```
+
+```{r, include=FALSE}
+lm_consum <- lm(CO2_emissions ~ Coal_Consumption + Electricity_Consumption + Oil_Consumption + Residential_Elec_Consumption + Natural_Gas_Consumption, data = finaldata)
+
+summary(lm_consum)
+```
+
+```{r, include=FALSE}
+#Full Model
+#lm_full <- lm(CO2_emissions ~ Electricity_production + Hydro_Production + Nuclear_Production + Oil_Production + Coal_Consumption + Electricity_Consumption + Oil_Consumption + Residential_Elec_Consumption + Natural_Gas_Consumption, data = finaldata)
+
+#summary(lm_full)
+```
+
+```{r, include=FALSE}
+# Assigning regions names to each region I have made, additional column to final dataset. 
+finaldata$Region <- case_when(
+  finaldata$country %in% mena_countries ~ "MENA",
+  #finaldata$country %in% sub_saharan_africa ~ "Sub-Saharan Africa", Had to exclude sub-saharan africa due to very minimal entries
+  finaldata$country %in% european ~ "Europe",
+  finaldata$country %in% north_america ~ "North America",
+  finaldata$country %in% latin_america_and_caribbean ~ "Latin America & Caribbean",
+  finaldata$country %in% east_asia_and_pacific ~ "East Asia & Pacific",
+  finaldata$country %in% south_asia ~ "South Asia",
+  finaldata$country %in% central_asia_and_europe ~ "Central Asia & Europe",
+  finaldata$country %in% eastern_europe ~ "Eastern Europe",
+  TRUE ~ "Other" 
+)
+
+
+#list to store models for each region
+regional_models <- list()
+
+#loop that interates over each region and runs the consumption model.
+for(region in unique(finaldata$Region)) {
+  regional_data <- finaldata %>% filter(Region == region)
+  model <- lm(CO2_emissions ~ Coal_Consumption + Electricity_Consumption + Oil_Consumption + Residential_Elec_Consumption + Natural_Gas_Consumption, data = regional_data)
+  regional_models[[region]] <- model
+}
+
+#outputting summary statistics for each multiple linear regression with different regions as predictors
+regional_models[["MENA"]]
+summary(regional_models[["MENA"]])
+
+regional_models[["Europe"]]
+summary(regional_models[["Europe"]])
+
+regional_models[["North America"]]
+summary(regional_models[["North America"]])
+
+regional_models[["Latin America & Caribbean"]]
+summary(regional_models[["Latin America & Caribbean"]])
+
+regional_models[["East Asia & Pacific"]]
+summary(regional_models[["East Asia & Pacific"]])
+
+regional_models[["South Asia"]]
+summary(regional_models[["South Asia"]])
+
+regional_models[["Central Asia & Europe"]]
+summary(regional_models[["Central Asia & Europe"]])
+
+regional_models[["Eastern Europe"]]
+summary(regional_models[["Eastern Europe"]])
+```
+
+## Methods 
+
+The datasets for this analysis was obtained from Gapminder, incorporating six datasets that were subsequently merged to create a comprehensive frame for analysis. This merged dataset contains a total of 711 observations with detailed annual data for each country spanning from 1985 to 2008. The primary variables include coal, oil, and natural gas consumption, as well as electricity usage, each quantified per person. Specifically, coal consumption is measured in tonnes of oil equivalent (toe) per person, electricity consumption is noted in kilowatt-hours per person, oil consumption is measured in tonnes per person per year, and residential electricity use is also recorded in kilowatt-hours per person.
+
+\begin{center}
+Table 1: Bivariate Analysis of CO2 Emissions (tonnes) per capita
+\end{center}
+
+| Predictor                        | Estimate | t-Value | CI                   | Std. Error     | p-Value     |
+|----------------------------------|----------|---------|----------------------|----------------|-------------|
+| Coal Consumption                 | 3.51     | 13.86   |     [3.02, 4.02]     | 0.25           | <2e-16 ***  |
+| Electricity Consumption          | 8.79e-04 | 28.64   | [8.19e-04, 9.39e-04] | 3.07e-05       | <2e-16 ***  |
+| Oil Consumption                  | 3.39     | 36.54   |     [3.21, 3.57]     | 0.09           | <2e-16 ***  |
+| Residential Electric Consumption | 3.2e-03  | 32.95   |  [3.0e-02, 3.3e-02]  | 9.71e-05       | <2e-16 ***  |
+| Natural Gas Consumption          | 1.34     | 34.28   |     [1.26, 1.41]     | 0.03           | <2e-16 ***  |
+\begin{center}
+Table indicates the change in CO2 emissions per capita associated with a one unit increase in each predictor. Significance levels: *** p<0.001, ** p<0.01.
+\end{center}
+
+Exploratory analysis was carried out using bivariate analysis to understand the relationship between each energy type and CO2 emissions. Scatter plots were generated for each predictor against CO2 emissions, which allowed for the initial assessment of linearity and the identification of potential outliers. Simple linear regression models were then applied to each predictor against CO2 emissions to ascertain their significance, with findings detailed in Table 1. The significance of these relationships in linear regression models indicates that changes in these variables are consistently associated with changes in CO2 emissions. Given these findings, incorporating these variables as predictors in a multiple linear regression model is justified, as they collectively might explain a larger proportion of the variance in CO2 emissions than when considered individually. Moreover, their statistical significance (p-Value < 0.05) supports their relevance in predicting the dependent variable, enhancing the model's explanatory power and predictive accuracy.
+\clearpage
+
+\begin{center}
+Multivariate Analysis of CO2 Emissions (tonnes) by Region
+\end{center}
+
+| Region                    | Multiple R-squared | Adjusted R-squared | F-statistic p-value |
+|---------------------------|--------------------|--------------------|---------------------|
+| MENA                      | 0.848              | 0.843              | < 2.2e-16 ***      |
+| Europe                    | 0.772              | 0.767              | < 2.2e-16 ***      |
+| North America             | 0.982              | 0.981              | < 2.2e-16 ***      |
+| Latin America & Caribbean | 0.952              | 0.950              | < 2.2e-16 ***      |
+| East Asia & Pacific       | 0.995              | 0.995              | < 2.2e-16 ***      |
+| South Asia                | 0.997              | 0.997              | < 2.2e-16 ***      |
+| Central Asia & Europe     | 0.879              | 0.865              | < 2.2e-16 ***      |
+| Eastern Europe            | 0.991              | 0.987              | < 2.2e-16 ***      |
+\begin{center}
+Table presents regional CO2 emissions models including identified consumption predictors. Significance levels: *** p<0.001, ** p<0.01.
+\end{center}
+
+Building on the insights gained from the bivariate analysis, a comprehensive multivariate analysis was developed. This model incorporated the significant predictors from the initial analysis, alongside dummy variables representing different regions to account for geographical variations in energy consumption patterns. The inclusion of region-specific variables aimed to capture the heterogeneity in energy practices and policies that could influence CO2 emissions. The model's effectiveness was evaluated based on its R-squared, adjusted R-squared values, and F-statistic p-values, which are reported in Table 2. The high Multiple R-squared and Adjusted R-squared values demonstrate the model's ability to explain a significant portion of the variance in CO2 emissions, while accounting for regional differences that may act as confounders. Additionally, the F-statistic p-value tests the null hypothesis that the model with predictors does not fit the data better than a model without any predictors.
+
+This multivariate regional analysis highlights the variations in the significance and strength of the association between energy consumption types and CO2 emissions across different regions, accounting for the inter-region differences in energy usage patterns and emission levels.
+
+The culmination of the exploratory and multivariate analyses led me to the specification of the final linear regression model. This model was employed to predict CO2 emissions based on the significant predictors and included interaction terms for regions to enhance its accuracy and applicability across different contexts. The model equation is as follows:
+
+
+$\text{CO2\_emissions} = \beta_0 + \beta_1 \times \text{Coal\_Consumption} + \beta_2 \times \text{Electricity\_Consumption} + \beta_3 \times \text{Oil\_Consumption} + \beta_4 \times \text{Residential\_Elec\_Consumption} + \beta_5 \times \text{Natural\_Gas\_Consumption} + \beta_6 \times \text{Region} + \epsilon$
+
+The analysis, overall, was performed using R, utilizing packages such as dplyr for data manipulation, ggplot2 for data visualization, and lm for regression analysis, ensuring rigorous statistical testing and clear visual representation of the findings.
+
+## Results
+
+\begin{center}
+Table 3: Summary Statistics for Final Model
+\end{center}
+
+| Predictor                     | Estimate | Std. Error | p-Value    |
+|-------------------------------|----------|------------|------------|
+| Coal_Consumption              | 5.66     | 0.26       | <2e-16 *** |
+| Electricity_Consumption       | -1.11e-03| 9.51e-05   | <2e-16 *** |
+| Oil_Consumption               | 1.81     | 0.14       | <2e-16 *** |
+| Residential_Elec_Consumption  | 2.90e-03 | 2.44e-04   | <2e-16 *** |
+| Natural_Gas_Consumption       | 1.21     | 0.03       | <2e-16 *** |
+| Region: East Asia & Pacific   | 5.16e-01 | 0.62       | 0.40267    |
+| Region: Eastern Europe        | 2.92     | 1.00       | 0.00358 ** |
+| Region: Europe                | 1.85     | 0.64       | 0.00404 ** |
+| Region: Latin America & Caribbean | 2.46     | 0.59       | 3.02e-05 *** |
+| Region: MENA                  | 4.11     | 0.69       | 4.50e-09 *** |
+| Region: North America         | 5.38     | 0.94       | 1.27e-08 *** |
+| Region: Other                 | -1.62    | 0.66       | 0.80636    |
+| Region: South Asia            | -2.86    | 0.63       | 0.66556    |
+
+\begin{center}
+Estimates reflect the change in CO2 emissions per capita for one unit increase in each predictor. Significance levels: *** p<0.001, ** p<0.01.
+\end{center}
+
+The core of the results stems from the linear regression model as depicted in Table 3. This model integrates both energy consumption metrics and regional classifications to predict CO2 emissions. Notably, each type of energy consumption—coal, oil, natural gas, and electricity—proved to be significant predictors of CO2 emissions, with p-values consistently below 0.001. These findings highlight the critical impact of energy consumption patterns on environmental outcomes.
+
+From a regional perspective, the model coefficients offer insightful revelations about the geographical disparity in CO2 emissions. For instance, North America exhibited a significant positive coefficient as shown in Table 3, North America presents a significantly positive coefficient, indicating that, with all other factors held constant, North American nations emit considerably more CO2 than the baseline established by Central Asian and European countries. This region serves as the reference group in our analysis, having been omitted from the model as the comparison benchmark for assessing regional differences in emissions.
+
+In addition, the model demonstrated excellent fit and predictive power, with an Adjusted R-Squared of 0.8776, indicating that approximately 88% of the variability in CO2 emissions is explained by the included predictors and regional effects. The F-statistic further validates the model's strength (F-statistic: 498.4 on 13 and 889 DF, p-value: < 2.2e-16), affirming that the model significantly outperforms a baseline model without predictors.
+
+```{r, include=TRUE}
+#Regional Analysis Model
+#Consumption Linear Regression Model WITH regions as predictors**
+#Justified by multivariate analysis...
+
+lm_region_effect <- lm(CO2_emissions ~ Coal_Consumption + Electricity_Consumption + Oil_Consumption + Residential_Elec_Consumption + Natural_Gas_Consumption + factor(Region), data = finaldata)
+summary(lm_region_effect)
+```
+
+## Discussion 
+
+The final model underscores significant regional disparities in CO2 emissions, pinpointing North America as a predominant contributor with a coefficient significantly higher (+5.38) than other regions. This finding challenges common perceptions which often spotlight regions like South Asia for their emissions, despite technological advancements in energy efficiency that are prevalent in more developed regions. Such results underscore the need for region-specific policies and interventions that address the unique environmental and economic contexts of these high-emission areas.
+
+Furthermore, coal consumption emerged as a powerful predictor of CO2 emissions, with an estimate of (+5.66), reflecting persistent global concerns over coal's environmental impact. This emphasizes the urgent need for shifts in energy policy toward more sustainable and less polluting energy sources. In contrast, electricity consumption displayed a surprisingly negative association with CO2 emissions (-1.11e-03), possibly reflecting increased utilization of renewable energy sources within the sampled regions, which aligns with global trends towards cleaner energy production.
+
+The model also revealed contrasting effects across regions; for instance, while North America showed a significant positive impact on emissions, South Asia exhibited a negative coefficient (-2.86), suggesting that despite rapid economic growth, it is possible to decrease emissions.
+
+However, this analysis is not without limitations. The assumption checks, depicted in Figures 1 and 2, revealed some concerns regarding the normality of residuals and homoscedasticity. The Q-Q plot (Figure 1) highlighted strong outliers, suggesting deviations from normality, while the Residuals vs. Fitted plot (Figure 2) indicated potential issues with non-constant variance across the range of fitted values. These issues suggest that the model may not fully meet the LINE assumptions, which can affect the reliability of the regression estimates and standard errors.
+
+Moreover, multicollinearity between predictors could also distort the interpretation of individual predictor effects. Although correlation matrices were used to check for multicollinearity, the close interrelationships among different types of energy consumption (coal, oil, and natural gas) might still influence the model estimates. In future analyses, applying log transformations to the consumption variables may help mitigate this issue by reducing their skewness and potentially simplifying the relationships between them, making it easier to discern their unique contributions to CO2 emissions. This adjustment could provide a clearer understanding of how each type of energy consumption impacts emissions independently of the others, offering more precise insights for policy recommendations.
+
+Despite these limitations, the findings contribute valuable perspectives to the ongoing discussions about global CO2 emissions, emphasizing the importance of considering both regional disparities and the types of energy consumed. The implications for policy are significant, as they highlight the need for tailored strategies that address the specific energy practices and take into account the economic contexts of different regions.
+
+Overall, this analysis provides a comprehensive view of how regional differences and specific energy consumption types impact CO2 emissions, offering valuable insights for policymakers involved in global environmental strategies.
+
+
+```{r, include=FALSE}
+#LINE ASSUMPTION PLOTS
+fitted_values <- fitted(lm_region_effect)
+residuals_values <- residuals(lm_region_effect)
+
+plot_data <- data.frame(
+  Fitted = fitted_values,
+  Residuals = residuals_values
+)
+
+ggplot(data = plot_data, aes(x = Fitted, y = sqrt(abs(Residuals)))) +
+  geom_point() +
+  geom_smooth(se = FALSE, color = "blue") +
+  labs(title = "Scale-Location Plot",
+       x = "Fitted values",
+       y = "Square Root of the Absolute Residuals") +
+  theme_minimal()
+```
+
+```{r, echo=FALSE}
+library(patchwork)
+
+qq_plot <- ggplot() + 
+  stat_qq(aes(sample = residuals(lm_region_effect))) + 
+  stat_qq_line(aes(sample = residuals(lm_region_effect)), color = "red") +
+  labs(title = "Figure 1: Q-Q Plot of Residuals", 
+       x = "Theoretical Quantities",
+       y = "Sample Quantities")
+
+res_vs_fit_plot <- ggplot(plot_data, aes(x = Fitted, y = Residuals)) +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  labs(title = "Figure 2: Residuals vs. Fitted Plot",
+       x = "Fitted values",
+       y = "Residuals") +
+  theme_minimal()
+#making them side by side
+qq_plot + res_vs_fit_plot + plot_layout(ncol = 2)
+```
+
+
+## Conclusion
+
+The findings from this study provide a nuanced understanding of the factors influencing global CO2 emissions. Energy consumption, particularly from coal, emerges as the leading driver of emissions, highlighting the critical need for transitioning towards more sustainable energy sources. The regional analysis reveals significant disparities in emissions, highlighting the impact of regional energy practices and policies. North America, contrary to common perceptions, stands out as a significant contributor, emphasizing the role of developed regions in global emissions. This study not only contributes to the academic discourse on environmental impact assessment but serves to aid policymakers in crafting targeted strategies that consider regional specificities to combat climate change effectively. The insights gained set the stage for further research into optimizing energy consumption patterns to foster a sustainable and habitable future.
+
+## References
+
+Li, Jing et al. “The Relationship between Energy Consumption, CO2 Emissions, Economic Growth, and Health Indicators.” International journal of environmental research and public health vol. 20,3 2325. 28 Jan. 2023, doi:10.3390/ijerph20032325
+
+Nicholas Apergis, James E. Payne,
+“CO2 emissions, energy usage, and output in Central America”, Energy Policy, Volume 37, Issue 8, 2009, Pages 3282-3286, ISSN 0301-4215, https://doi.org/10.1016/j.enpol.2009.03.048.
+
+Gapminder. Gapminder Foundation, gapminder.org. Accessed 28 May. 2024.

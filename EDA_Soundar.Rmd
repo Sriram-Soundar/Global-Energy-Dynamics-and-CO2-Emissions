@@ -1,0 +1,119 @@
+---
+title: "EDA"
+author: "Sriram Soundarapandian"
+date: "2024-04-25"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readr)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(pheatmap)
+finaldata <- read_csv("finaldata.csv")
+```
+```{r}
+mena_countries <- c("UAE", "Saudi Arabia", "Iran", "Iraq", "Israel", "Kuwait", "Oman", "Qatar", "Turkey")
+
+sub_saharan_africa <- c("South Africa")
+
+european <- c("Austria", "Belgium", "Bulgaria", "Belarus", "Switzerland", "Cyprus", "Czech Republic", "Germany", "Denmark", "Spain", "Estonia", "Finland", "France", "UK", "Greece", "Croatia", "Hungary", "Iceland", "Ireland", "Italy", "Lithuania", "Luxembourg", "Latvia", "Netherlands", "Norway", "Poland", "Portugal", "Romania", "Russia", "Slovakia", "Slovenia", "Sweden")
+
+north_america <- c("Canada", "USA")
+
+latin_america_and_caribbean <- c("Argentina", "Brazil", "Chile", "Columbia", "Ecuador", "Mexico", "Peru", "Trinidad and Tobago", "Venezuela")
+
+east_asia_and_pacific <- c("Australia", "China", "Hong Kong, China", "Indonesia", "Japan", "Kazakhstan", "Malaysia", "New Zealand", "Philippines", "Singapore", "South Korea", "Taiwan", "Thailand", "Vietnam")
+
+south_asia <- c("Bangladesh", "India", "Pakistan", "Sri Lanka")
+
+central_asia_and_europe <- c("Azerbaijan", "Turkmenistan", "Uzbekistan")
+
+eastern_europe <- c("Ukraine")
+```
+
+
+```{r}
+mena_df <- finaldata %>% filter(country %in% mena_countries)
+sub_saharan_africa_df <- finaldata %>% filter(country %in% sub_saharan_africa)
+european_df <- finaldata %>% filter(country %in% european)
+north_america_df <- finaldata %>% filter(country %in% north_america)
+latin_america_and_caribbean_df <- finaldata %>% filter(country %in% latin_america_and_caribbean)
+east_asia_and_pacific_df <- finaldata %>% filter(country %in% east_asia_and_pacific)
+south_asia_df <- finaldata %>% filter(country %in% south_asia)
+central_asia_and_europe_df <- finaldata %>% filter(country %in% central_asia_and_europe)
+eastern_europe_df <- finaldata %>% filter(country %in% eastern_europe)
+```
+
+```{r}
+plot_line_graph <- function(data, title) {
+  ggplot(data, aes(x = Year, y = CO2_emissions, group = country, color = country)) +
+    geom_line() +
+    geom_point() +
+    theme_minimal() +
+    labs(title = title, x = "Year", y = "CO2 Emissions (Metric Tons)") +
+    theme(legend.position = "bottom")
+}
+
+plot_line_graph(mena_df, "MENA Region CO2 Emissions 1985-2008")
+
+plot_line_graph(sub_saharan_africa_df, "Sub-Saharan Africa CO2 Emissions 1985-2008")
+
+plot_line_graph(european_df, "European CO2 Emissions 1985-2008")
+
+plot_line_graph(north_america_df, "North American CO2 Emissions 1985-2008")
+
+plot_line_graph(latin_america_and_caribbean_df, "Latin American and Caribbean CO2 Emissions 1985-2008")
+
+plot_line_graph(east_asia_and_pacific_df, "East Asia and Pacific CO2 Emissions 1985-2008")
+
+plot_line_graph(south_asia_df, "South Asian CO2 Emissions 1985-2008")
+
+plot_line_graph(central_asia_and_europe_df, "Central Asia and Europe CO2 Emissions 1985-2008")
+
+plot_line_graph(eastern_europe_df, "Eastern Europe CO2 Emissions 1985-2008")
+```
+
+CORRELATION MATRIX
+
+```{r}
+numeric_data <- finaldata %>% 
+  select(CO2_emissions, Coal_Consumption, Electricity_Consumption, Oil_Consumption, Residential_Elec_Consumption, Natural_Gas_Consumption, Electricity_production, Hydro_Production, Nuclear_Production, Oil_Production, Energy_Production, Energy_Use)
+
+cor_matrix <- cor(numeric_data, use = "complete.obs")
+
+pheatmap(cor_matrix, 
+         clustering_distance_rows = "euclidean",
+         clustering_distance_cols = "euclidean",
+         clustering_method = "complete",
+         color = colorRampPalette(c("blue", "white", "red"))(50),
+         border_color = NA)
+```
+
+```{r}
+#a function to create scatter plots for CO2 emissions vs. various energy metrics
+plot_energy_vs_co2 <- function(data, energy_type, region_name) {
+  ggplot(data, aes_string(x = energy_type, y = "CO2_emissions")) +  # aes_string allows passing column names as string
+    geom_point(aes(color = country), alpha = 0.6) +
+    labs(title = paste("CO2 Emissions vs.", energy_type, "in", region_name),
+         x = paste(energy_type, "(units)"),
+         y = "CO2 Emissions (metric tons)") +
+    theme_minimal() +
+    theme(legend.position = "bottom")
+}
+
+energy_types <- c("Oil_Consumption", "Electricity_Consumption", "Natural_Gas_Consumption", "Coal_Consumption", "Residential_Elec_Consumption", "Electricity_production", "Hydro_Production", "Nuclear_Production", "Oil_Production", "Energy_Production", "Energy_Use")
+
+region_dataframes <- list(MENA = mena_df, Sub_Saharan_Africa = sub_saharan_africa_df, European = european_df, North_America = north_america_df, Latin_America_and_Caribbean = latin_america_and_caribbean_df, East_Asia_and_Pacific = east_asia_and_pacific_df, South_Asia = south_asia_df, Central_Asia_and_Europe = central_asia_and_europe_df, Eastern_Europe = eastern_europe_df)
+
+for (region in names(region_dataframes)) {
+  for (energy in energy_types) {
+    print(plot_energy_vs_co2(region_dataframes[[region]], energy, region))
+  }
+}
+```
