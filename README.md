@@ -4,11 +4,11 @@ Welcome to my repository for "Global Energy Dynamics and CO2 Emissions: A Compre
 
 ## Overview
 
-This research utilizes comprehensive datasets from 1985 to 2008 to analyze global energy consumption's impact on CO2 emissions. It seeks to identify significant predictors and regional variations, offering a data-driven foundation for crafting targeted energy policies.
+This research utilizes six comprehensive datasets from Gapminder.org during the period 1985 to 2008 to analyze global energy consumption's impact on CO2 emissions. It seeks to identify significant predictors and regional variations, offering a data-driven foundation for crafting targeted energy policies.
 
 ## Features
 
-- **Integrated Datasets**: This merges 8 public datasets found on GapMinder.com to examine CO2 emissions alongside energy consumption worldwide.
+- **Integrated Datasets**: This merges six public datasets found on GapMinder.org to examine CO2 emissions alongside energy consumption worldwide.
 - **Exploratory Data Analysis (EDA)**: Employed various statistical techniques to uncover underlying patterns and relationships within the data.
   - **Correlation Analysis**: Utilized correlation matrices to identify and visualize the relationships between different energy types and CO2 emissions.
   - **Trend Analysis**: Examined changes over time using line graphs, highlighting regional and temporal trends in emissions.
