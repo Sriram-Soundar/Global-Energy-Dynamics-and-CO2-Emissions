@@ -21,15 +21,15 @@ This research utilizes comprehensive datasets from 1985 to 2008 to analyze globa
    ```bash
    git clone https://github.com/yourusername/energy-co2-dynamics.git
    cd energy-co2-dynamics
-![image](https://github.com/user-attachments/assets/c7c7b54f-2ec3-4d0f-ad63-a7feb8372215)
-
+   
 2. **Explore the Data**:
 
-Open the provided R Markdown files to review the detailed analysis process, from initial data cleaning to sophisticated statistical modeling.
+   Open the provided R Markdown files to review the detailed analysis process, from initial data cleaning to sophisticated       
+   statistical modeling.
 
 3. **Run the Analysis**:
 
-Execute the analysis within the R environment to reproduce results or modify the approach for further exploration.
+   Execute the analysis within the R environment to reproduce results or modify the approach for further exploration.
 
 ## What I Learned
 
